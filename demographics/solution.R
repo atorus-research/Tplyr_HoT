@@ -79,7 +79,7 @@ ht <- huxtable::as_hux(demog2, add_colnames=FALSE) %>% # `add_colnames` is FALSE
   huxtable::set_top_border(1, 1:ncol(demog2), 1) %>% # Put a border above the header row
   huxtable::set_width(1.5) %>% # Set the table width
   huxtable::set_escape_contents(FALSE) %>% # Don't escape RTF syntax
-  huxtable::set_col_width(c(.22, .3, .16, .16, .16)) # Set the column widths 
+  huxtable::set_col_width(c(.22, .27, .15, .18, .18)) # Set the column widths 
 
 # Now we'll use pharmaRTF to create the RTF output - plugging gaps not supported by Huxtable for clinical tables
 doc <- rtf_doc(ht, header_rows=1) %>%
