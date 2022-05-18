@@ -3,20 +3,43 @@
 # Date: 2022-05-16
 
 
+
+## QUESTION: ----
+
+#Now that you have seen how Tplyr works, you can update the code to adjust the formatting string for how the numbers are displayed as follows:
+
+# '00 (00.0%) [0]' for the distinct n, the distinct percentage, and the overall n 
+
+#Some of the code has been provided for you to start, use the example as a template.
+
+
+
+
+
+
 ## Load packages ---
+# This loads all of the packages needed to create the tables
 library(Tplyr)
 library(pharmaRTF)
 library(dplyr)
 library(tidyr)
 
+
 ## Read in necessary source data ----
+# This part of the code reads the data into R, in this example we need boy the adsl and the adae
 adsl <- haven::read_xpt(url("https://github.com/phuse-org/TestDataFactory/raw/main/Updated/TDF_ADaM/adsl.xpt"))
 adae <- haven::read_xpt(url("https://github.com/phuse-org/TestDataFactory/raw/main/Updated/TDF_ADaM/adae.xpt"))
 
 ## Adverse Event Work Area ----
 
-# Create the Tplyr table object - this is like a specification for the table
-t <- tplyr_table(adae, TRTA, where= SAFFL == "Y") %>% 
+
+# Now that the data is read into R, we can begin constructing the table itself.
+
+# 1. Create the Tplyr table object - this is like a specification for the table and includes the grouping variable (in this example TRTA)
+# 2. Set the population data and treatment variable, in this example they are not found in the adae so we need to use the adsl for population data.
+# 3. Add layers as needed, remember to choose the correct layer type for the type of data you are displaying
+
+t <- tplyr_table(adae, TRTA, where = SAFFL == "Y") %>% 
   set_pop_data(adsl) %>% 
   set_pop_treat_var(TRT01A) %>% 
   add_total_group() %>% 
@@ -27,22 +50,23 @@ t <- tplyr_table(adae, TRTA, where= SAFFL == "Y") %>%
       # Nest the row labels together
       set_nest_count(TRUE) %>% 
       # Specify the results format
-      set_format_strings(f_str('xx (xx.x%) [x]', distinct_n, distinct_pct, n)) %>% 
+      set_format_strings(f_str()) %>% #### HINT: Add your code to set the format string here
+      
       # These three functions set you up to be able to sort by descending
       # occurrence within the Xanomeline High Dose group
-      set_order_count_method("bycount", break_ties='desc') %>%
+      set_order_count_method("bycount", break_ties = 'desc') %>%
       set_ordering_cols("Xanomeline High Dose") %>%
       set_result_order_var(distinct_n)
   )
 
-# Now build the table - this is where the number crunching happens
+# 4. Now build the table - this is where the number crunching happens and is a very important step 
 ae1 <- t %>% 
   build()
 
-# View the data 
+# 5. View the data 
 ae1
 
-# Now let's make it pretty
+# 6. Now let's make it pretty and adjust how it is displayed.
 ae2 <- ae1 %>% 
   arrange(desc(ord_layer_1), desc(ord_layer_2)) %>% 
   apply_row_masks(row_breaks = TRUE, ord_layer_index, ord_layer_1) %>% # Blank out repeating row labels and insert row breaks
@@ -53,8 +77,10 @@ ae2 <- ae1 %>%
            "|Xanomeline High Dose\\line(N=**Xanomeline High Dose**)\\line n (% [E]|Total\\line(N=**Total**)\\line n (% [E]"), 
     header_n = header_n(t)
   ) # Huxtable-ready column headers and header Ns
-  
-# This is a table styling library named Huxtable that has good RTF capabilities
+
+## This section contains the code needed for adjusting the table aesthetics using the huxtable package, we will not be discussing it in this training. ----
+
+# This is a table styling library named huxtable that has good RTF capabilities
 ht <- huxtable::as_hux(ae2, add_colnames=FALSE) %>% # `add_colnames` is FALSE because we already added our own
   huxtable::set_bold(1, 1:ncol(ae2), TRUE) %>% # Bold the header row
   huxtable::set_align(1, 2:ncol(ae2), 'center') %>% # Center align the results headers
