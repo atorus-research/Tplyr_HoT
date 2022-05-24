@@ -1,7 +1,7 @@
-# Adverse Events Table
-# 
-# Date: 2022-05-16
 
+#### PharmaSUG Atorus Hands on Training -----
+#### Making Clinical Tables with Tplyr 
+#### Authors: Mike Stackhouse and Jessica Higgins PhD
 
 
 ## QUESTION: ----
@@ -10,10 +10,10 @@
 
 # '00 (00.0%) [0]' for the distinct n, the distinct percentage, and the overall n 
 
-#Some of the code has been provided for you to start, use the example as a template.
-
-
-
+# Some of the code has been provided for you to start, use the example as a template.#Some of the code has been provided for you to start, use the example as a template.
+# Need some help? Check this link:
+# https://atorus-research.github.io/Tplyr/articles/count.html#distinct-versus-event-counts
+# HINT: Add your code at lines 53-54
 
 
 

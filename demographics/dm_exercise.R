@@ -6,7 +6,8 @@
 
 ## QUESTION: ----
 
-#Now that you have seen how Tplyr works, you can update the code to create your own demographics table. Using the skills you have learned, add the following metrics to the demographics table. `ETHNIC`, and `WEIGHTBL`. Some of the code has been provided for you to start, use the example as a template.
+# Now that you have seen how Tplyr works, you can update the code to create your own demographics table. Using the skills you have learned, add the following metrics to the demographics table. `ETHNIC`, and `WEIGHTBL`. Some of the code has been provided for you to start, use the example as a template. 
+# HINT: Add the code in at line 76-77
 
 
 

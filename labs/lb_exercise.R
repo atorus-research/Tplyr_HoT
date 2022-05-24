@@ -1,8 +1,7 @@
-# Labs Table
-# 
-# Date: 2022-05-16
 
-
+#### PharmaSUG Atorus Hands on Training -----
+#### Making Clinical Tables with Tplyr 
+#### Authors: Mike Stackhouse and Jessica Higgins PhD
 
 ## QUESTION: ----
 
@@ -12,8 +11,10 @@
 # Median, auto decimal precision +1
 # Q1 and Q3, auto decimal precision +1
 # Min, Max, auto decimal precision +0
-#Some of the code has been provided for you to start, use the example as a template.
-
+# Some of the code has been provided for you to start, use the example as a template.
+# Having trouble? Check this link for some help:
+# https://atorus-research.github.io/Tplyr/articles/desc.html#auto-precision
+# HINT: Insert code at lines 58-62
 
 
 
