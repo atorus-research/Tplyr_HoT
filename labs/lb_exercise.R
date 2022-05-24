@@ -1,21 +1,49 @@
-# Labs Table
-# 
-# Date: 2022-05-16
+
+#### PharmaSUG Atorus Hands on Training -----
+#### Making Clinical Tables with Tplyr 
+#### Authors: Mike Stackhouse and Jessica Higgins PhD
+
+## QUESTION: ----
+
+# Now that you have seen how Tplyr works, you can update the code to set the auto decimal precision as follows:
+# Mean, auto decimal precision +1 
+# SD, auto decimal precision +2
+# Median, auto decimal precision +1
+# Q1 and Q3, auto decimal precision +1
+# Min, Max, auto decimal precision +0
+# Some of the code has been provided for you to start, use the example as a template.
+# Having trouble? Check this link for some help:
+# https://atorus-research.github.io/Tplyr/articles/desc.html#auto-precision
+# HINT: Insert code at lines 58-62
+
+
+
+
 
 
 ## Load packages ---
+# This loads all of the packages needed to create the tables
 library(Tplyr)
 library(pharmaRTF)
 library(dplyr)
 library(tidyr)
 
 ## Read in necessary source data ----
+# This part of the code reads the data into R 
 adsl <- haven::read_xpt(url("https://github.com/phuse-org/TestDataFactory/raw/main/Updated/TDF_ADaM/adsl.xpt"))
 adlb <- haven::read_xpt(url("https://github.com/phuse-org/TestDataFactory/raw/main/Updated/TDF_ADaM/adlbc.xpt"))
 
 ## Labs Work Area ----
 
-# Create the Tplyr table object - this is like a specification for the table
+
+# Now that the data is read into R, we can begin constructing the table itself.
+
+# 1. Create the Tplyr table object - this is like a specification for the table and includes the grouping variable (in this example TRTA, SAFFL == Y, and PARAMCD == CA, and where the AVISITN is not NA and AVISITN > 0)
+# 2. Set the population data and treatment variable, in this example they are not found in the adlb so we need to use the adsl for population data.
+# 3. Add layers as needed, remember to choose the correct layer type for the type of data you are displaying
+# 4. Adjust the decimal precision as needed and set the precision to a specific variable which in this example is AVAL.
+
+
 # Filter down to Calcium tests in the Safety group post-baseline
 t <- tplyr_table(adlb, TRTA, where = SAFFL == "Y" & PARAMCD == "CA" & !is.na(AVISITN) & AVISITN > 0) %>% 
   set_pop_data(adsl) %>% 
@@ -26,25 +54,25 @@ t <- tplyr_table(adlb, TRTA, where = SAFFL == "Y" & PARAMCD == "CA" & !is.na(AVI
   add_layer(
     group_desc(vars(BASE, AVAL), by = AVISIT) %>% 
       set_format_strings(
-        "N"        = f_str("xx", n),
-        "Mean"     = f_str('xx.a+1', mean), # automatically calculate decimal precision and add one decimal space
-        "SD"       = f_str('xxx.a+2', sd), # automatically calculate decimal precision and add two decimal spaces
-        "Median"   = f_str('xx.a+1', median),
-        "Q1, Q3"   = f_str('xx.a+1, x.a+1', q1, q3),
-        "Min, Max" = f_str("x.a, x.a", min, max), # automatically calculate decimal precision use that decimal precision
-        # Cap the decimal length 
-        cap = c(dec=2) # If limit auto-collected precision to 2 decimal spaces
-      )
-    )
+        "N"        = f_str("xx", n), ##### HINT: This is where you should set the auto decimal precision as described in the question 
+        "Mean"     = f_str(, mean), 
+        "SD"       = f_str(, sd), 
+        "Median"   = f_str(, median),
+        "Q1, Q3"   = f_str(, q1, q3),
+        "Min, Max" = f_str(, min, max), 
+        cap = c(dec=2)  # If limit auto-collected precision to 2 decimal spaces
+      ) %>%
+      set_precision_on(AVAL)
+  )
 
-# Now build the table - this is where the number crunching happens
+# 5. Now build the table - this is where the number crunching happens and is a very important step
 labs1 <- t %>% 
   build()
 
-# View the data 
+# 6. View the data 
 labs1
 
-# Now let's make it pretty
+# 7. Now let's make it pretty
 labs2 <- labs1 %>% 
   apply_row_masks(row_breaks = TRUE, ord_layer_1) %>% # Blank out repeating row labels and insert row breaks
   select(row_label1, row_label2, var1_Placebo, var2_Placebo, 
@@ -55,9 +83,12 @@ labs2 <- labs1 %>%
            "| Xanomeline Low Dose\\line(N=**Xanomeline Low Dose**) {At Timepoint | Change from Baseline} |",
            "Xanomeline High Dose\\line(N=**Xanomeline High Dose**) {At Timepoint | Change from Baseline}"),
     header_n = header_n(t)
-    ) # Huxtable-ready column headers and header Ns
-  
-# This is a table styling library named Huxtable that has good RTF capabilities
+  ) # Huxtable-ready column headers and header Ns
+
+
+
+
+## This section contains the code needed for adjusting the table aesthetics using the huxtable package, we will not be discussing it in this training. ----
 ht <- huxtable::as_hux(labs2, add_colnames=FALSE) %>% # `add_colnames` is FALSE because we already added our own
   huxtable::merge_cells(1, 3:4) %>% # Merges cells for placebo
   huxtable::merge_cells(1, 5:6) %>% # Merges cells for Low Xanomeline Dose
